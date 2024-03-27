@@ -1,7 +1,6 @@
 package org.z.act.service;
 
 import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
 import io.quarkus.mailer.reactive.ReactiveMailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -9,6 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.z.act.dto.NotificationDTO;
+import org.z.act.entity.NotificationEmailEntity;
 
 @ApplicationScoped
 public class NotificationConsumer {
@@ -30,6 +30,13 @@ public class NotificationConsumer {
             System.out.println("Sender: " + notificationDTO.getSender());
             System.out.println("Subject: " + notificationDTO.getSubject());
             System.out.println("Body: " + notificationDTO.getBody());
+
+            NotificationEmailEntity notificationEntity = new NotificationEmailEntity();
+            notificationEntity.setRecipient(notificationDTO.getRecipient());
+            notificationEntity.setSender(notificationDTO.getSender());
+            notificationEntity.setSubject(notificationDTO.getSubject());
+            notificationEntity.setBody(notificationDTO.getBody());
+            notificationEntity.persist();
 
             sendEmail(notificationDTO);
         }
