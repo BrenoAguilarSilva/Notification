@@ -21,14 +21,14 @@ public class NotificationProducer {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN) /////// Remover ou mudar para JSON
+    @Produces(MediaType.APPLICATION_JSON)
     public Response sendNotification(NotificationDTO notificationData) {
         try {
             String message = createMessage(notificationData);
             emitter.send(message);
-            return Response.status(Response.Status.CREATED).entity("Notificação enviada").build();
+            return Response.status(Response.Status.CREATED).entity("{\"message\": \"Notificação enviada\"}").build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Falha no envio").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Falha no envio\"}").build();
         }
     }
 
@@ -47,13 +47,13 @@ public class NotificationProducer {
     @POST
     @Path("sendEmail")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN) /////// Remover ou mudar para JSON
+    @Produces(MediaType.APPLICATION_JSON)
     public Response sendEmail(NotificationDTO notificationData) {
         try {
             emailEmitter.send(notificationData);
-            return Response.status(Response.Status.CREATED).entity("Email colocado na fila para envio").build();
+            return Response.status(Response.Status.CREATED).entity("{\"message\": \"Email colocado na fila para envio\"}").build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Falha ao colocar o email na fila").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Falha ao colocar o email na fila\"}").build();
         }
     }
 }

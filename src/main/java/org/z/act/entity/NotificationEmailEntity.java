@@ -7,10 +7,13 @@ import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @MongoEntity(collection="email")
 public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
     public String recipient;
+
+    public List<String> ccRecipients;
     public String sender;
     public String subject;
     public String body;
@@ -31,6 +34,14 @@ public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
 
     public void setRecipient(String recipient) {
         this.recipient = recipient;
+    }
+
+    public List<String> getCcRecipients() {
+        return ccRecipients;
+    }
+
+    public void setCcRecipients(List<String> ccRecipients) {
+        this.ccRecipients = ccRecipients;
     }
 
     public String getSender() {

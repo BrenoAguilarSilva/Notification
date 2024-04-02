@@ -37,6 +37,7 @@ public class NotificationConsumer {
 
             NotificationEmailEntity notificationEntity = new NotificationEmailEntity();
             notificationEntity.setRecipient(notificationDTO.getRecipient());
+            notificationEntity.setCcRecipients(notificationDTO.getRecipientCC());
             notificationEntity.setSender(notificationDTO.getSender());
             notificationEntity.setSubject(notificationDTO.getSubject());
             notificationEntity.setBody(notificationDTO.getBody());
@@ -48,7 +49,15 @@ public class NotificationConsumer {
         }
         private void sendEmail(NotificationDTO notificationDTO) {
             try {
-                reactiveMailer.send(Mail.withText(notificationDTO.getRecipient(), notificationDTO.getSubject(), notificationDTO.getBody()))
+                Mail mail = Mail.withText(notificationDTO.getRecipient(), notificationDTO.getSubject(), notificationDTO.getBody());
+
+                if (notificationDTO.getRecipientCC() != null) {
+                    for (String ccRecipient : notificationDTO.getRecipientCC()) {
+                        mail = mail.addCc(ccRecipient);
+                    }
+                }
+
+                reactiveMailer.send(mail)
                         .subscribe().with(
                                 success -> System.out.println("E-mail enviado com sucesso para: " + notificationDTO.getRecipient()),
                                 failure -> System.err.println("Erro ao enviar e-mail: " + failure.getMessage()));

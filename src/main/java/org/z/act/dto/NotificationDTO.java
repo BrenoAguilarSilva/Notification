@@ -1,5 +1,7 @@
 package org.z.act.dto;
 
+import java.util.List;
+
 public class NotificationDTO {
     private String recipient;
     public String getRecipient() {
@@ -9,6 +11,16 @@ public class NotificationDTO {
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
+    private List<String> recipientCC;
+
+    public List<String> getRecipientCC() {
+        return recipientCC;
+    }
+
+    public void setRecipientCC(List<String> recipientCC) {
+        this.recipientCC = recipientCC;
+    }
+
     private String sender;
 
     public String getSender() {
