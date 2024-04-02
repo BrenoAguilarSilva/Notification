@@ -2,15 +2,19 @@ package org.z.act.entity;
 
 import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoEntity;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDateTime;
+
 @MongoEntity(collection="email")
-public class NotificationEmailEntity extends PanacheMongoEntity {
+public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
     public String recipient;
     public String sender;
     public String subject;
     public String body;
+    public LocalDateTime data;
 
 
     public ObjectId getId() {
@@ -51,5 +55,13 @@ public class NotificationEmailEntity extends PanacheMongoEntity {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
     }
 }

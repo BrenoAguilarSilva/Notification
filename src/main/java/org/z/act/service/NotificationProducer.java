@@ -21,7 +21,7 @@ public class NotificationProducer {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN) /////// Remover ou mudar para JSON
     public Response sendNotification(NotificationDTO notificationData) {
         try {
             String message = createMessage(notificationData);
@@ -47,7 +47,7 @@ public class NotificationProducer {
     @POST
     @Path("sendEmail")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN) /////// Remover ou mudar para JSON
     public Response sendEmail(NotificationDTO notificationData) {
         try {
             emailEmitter.send(notificationData);

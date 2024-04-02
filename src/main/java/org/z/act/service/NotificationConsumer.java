@@ -10,6 +10,8 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.z.act.dto.NotificationDTO;
 import org.z.act.entity.NotificationEmailEntity;
 
+import java.time.LocalDateTime;
+
 @ApplicationScoped
 public class NotificationConsumer {
     @Incoming("my-notification")
@@ -31,12 +33,16 @@ public class NotificationConsumer {
             System.out.println("Subject: " + notificationDTO.getSubject());
             System.out.println("Body: " + notificationDTO.getBody());
 
+            LocalDateTime now = LocalDateTime.now();
+
             NotificationEmailEntity notificationEntity = new NotificationEmailEntity();
             notificationEntity.setRecipient(notificationDTO.getRecipient());
             notificationEntity.setSender(notificationDTO.getSender());
             notificationEntity.setSubject(notificationDTO.getSubject());
             notificationEntity.setBody(notificationDTO.getBody());
-            notificationEntity.persist();
+            notificationEntity.setData(now);
+
+            persistNotification(notificationEntity);
 
             sendEmail(notificationDTO);
         }
@@ -49,6 +55,12 @@ public class NotificationConsumer {
             } catch (Exception e) {
                 System.err.println("Erro ao enviar e-mail: " + e.getMessage());
             }
+        }
+        private void persistNotification(NotificationEmailEntity notificationEntity) {
+            notificationEntity.persist().subscribe().with(
+                    result -> System.out.println("Persistência realizada com sucesso"),
+                    failure -> System.err.println("Erro ao persistir e-mail: " + failure.getMessage())
+            );
         }
     }
 }
