@@ -25,18 +25,11 @@ public class NotificationConsumer {
 
     @ApplicationScoped
     public static class EmailConsumer {
-
         @Inject
         ReactiveMailer reactiveMailer;
 
         @Incoming("my-email")
         public void processEmail(NotificationDTO notificationDTO) {
-            System.out.println("Email recebido pelo Kafka:");
-            System.out.println("Recipient: " + notificationDTO.getEmail().getRecipient());
-            System.out.println("Sender: " + notificationDTO.getEmail().getSender());
-            System.out.println("Subject: " + notificationDTO.getSubject());
-            System.out.println("Body: " + notificationDTO.getBody());
-
             LocalDateTime now = LocalDateTime.now();
 
             NotificationEmailEntity notificationEntity = new NotificationEmailEntity();
