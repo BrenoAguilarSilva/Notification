@@ -34,8 +34,8 @@ public class NotificationProducer {
 
     private String createMessage(NotificationDTO notificationData) {
         return String.format("Este email foi enviado por \"%s\" para \"%s\", com a intenção de notifica-lo sobre \"%s\". Este é o conteúdo do email: \"%s\"",
-                notificationData.getSender(),
-                notificationData.getRecipient(),
+                notificationData.getEmail().getSender(),
+                notificationData.getEmail().getRecipient(),
                 notificationData.getSubject(),
                 notificationData.getBody());
     }

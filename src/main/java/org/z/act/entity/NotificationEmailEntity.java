@@ -11,8 +11,8 @@ import java.util.List;
 
 @MongoEntity(collection="email")
 public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
+    public boolean receiveEmail;
     public String recipient;
-
     public List<String> ccRecipients;
     public String sender;
     public String subject;
@@ -26,6 +26,14 @@ public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public boolean isReceiveEmail() {
+        return receiveEmail;
+    }
+
+    public void setReceiveEmail(boolean receiveEmail) {
+        this.receiveEmail = receiveEmail;
     }
 
     public String getRecipient() {
