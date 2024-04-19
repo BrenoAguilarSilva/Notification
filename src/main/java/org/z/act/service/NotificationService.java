@@ -2,6 +2,7 @@ package org.z.act.service;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.z.act.dto.NotificationUserDTO;
 import org.z.act.entity.NotificationEmailEntity;
 
@@ -11,13 +12,17 @@ import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class NotificationService {
-
+    private final ConvertService convertService;
+    @Inject
+    public NotificationService(ConvertService convertService) {
+        this.convertService = convertService;
+    }
     public List<NotificationUserDTO> getNotificationsForUser(String userEmail) {
         Uni<List<NotificationEmailEntity>> uni = NotificationEmailEntity.list("recipient", userEmail);
         List<NotificationEmailEntity> notificationEntities = uni.await().indefinitely();
 
         return notificationEntities.stream()
-                .map(this::convertToDTO)
+                .map(convertService::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -27,15 +32,9 @@ public class NotificationService {
         Uni<List<NotificationEmailEntity>> uni = NotificationEmailEntity.list("data >= ?1 and recipient = ?2", thirtyDaysAgo, userEmail);
         List<NotificationEmailEntity> notificationEntities = uni.await().indefinitely();
 
-        return notificationEntities.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
 
-    private NotificationUserDTO convertToDTO(NotificationEmailEntity entity) {
-        NotificationUserDTO dto = new NotificationUserDTO();
-        dto.setSubject(entity.getSubject());
-        dto.setBody(entity.getBody());
-        return dto;
+        return notificationEntities.stream()
+                .map(convertService::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

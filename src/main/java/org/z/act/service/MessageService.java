@@ -22,7 +22,6 @@ public class MessageService {
                         pushNotification.getBody());
             }
             default ->
-                // Lidar com outros tipos de notificação, se aplicável
                     "Tipo de notificação não suportado";
         };
     }
