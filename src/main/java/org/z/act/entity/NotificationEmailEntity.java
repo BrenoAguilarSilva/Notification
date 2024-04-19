@@ -24,10 +24,6 @@ public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
         return id;
     }
 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
     public boolean isReceiveEmail() {
         return receiveEmail;
     }

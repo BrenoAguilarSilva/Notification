@@ -67,7 +67,7 @@ public class NotificationConsumer {
         }
         private void persistNotification(NotificationEmailEntity notificationEntity) {
             notificationEntity.persist().subscribe().with(
-                    result -> LOG.info("Persistência realizada com sucesso"),
+                    result -> LOG.info("Persistencia realizada com sucesso"),
                     failure -> LOG.error("Erro ao persistir e-mail: " + failure.getMessage())
             );
         }
