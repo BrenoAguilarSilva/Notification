@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.z.act.dto.NotificationBatch;
 import org.z.act.dto.NotificationEmail;
 import org.z.act.entity.NotificationEmailEntity;
 import org.z.act.service.EmailService;
@@ -40,6 +41,14 @@ public class NotificationConsumer {
             if (emailNotification.isReceiveEmail()) {
                 emailService.sendEmail(emailNotification);
             }
+        }
+    }
+
+    @ApplicationScoped
+    public static class BatchNotificationConsumer {
+        @Incoming("my-batchnotification")
+        public void processBatchNotification(NotificationBatch notificationBatch){
+            LOG.info("Notificacoes recebidas com sucesso: " + notificationBatch);
         }
     }
 }

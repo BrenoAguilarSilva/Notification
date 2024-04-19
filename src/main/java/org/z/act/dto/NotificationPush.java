@@ -19,5 +19,13 @@ public class NotificationPush extends NotificationDTO{
     public void setRecipientPush(String recipientPush) {
         this.recipientPush = recipientPush;
     }
+
+    @Override
+    public String toString() {
+        return "NotificationPush{" +
+                "receivePush=" + receivePush +
+                ", recipient='" + recipientPush + '\'' +
+                '}';
+    }
 }
 

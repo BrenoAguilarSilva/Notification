@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
+import org.z.act.dto.NotificationBatch;
 import org.z.act.dto.NotificationDTO;
 import org.z.act.dto.NotificationEmail;
 import org.z.act.service.MessageService;
@@ -54,4 +55,22 @@ public class NotificationProducer {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Falha ao colocar o email na fila\"}").build();
         }
     }
+
+    @Inject
+    @Channel("my-batchnotification")
+    Emitter<NotificationBatch> batchEmitter;
+
+    @POST
+    @Path("sendBatchNotification")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sendBatchNotification(NotificationBatch notificationBatch) {
+        try {
+            batchEmitter.send(notificationBatch);
+            return Response.status(Response.Status.CREATED).entity("{\"message\": \"Notificacoes colocadas na fila para envio\"}").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Falha ao colocar as notificaticoes na fila\"}").build();
+        }
+    }
 }
+

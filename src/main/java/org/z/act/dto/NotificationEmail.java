@@ -39,4 +39,14 @@ public class NotificationEmail extends NotificationDTO{
     public void setSender(String sender) {
         this.sender = sender;
     }
+
+    @Override
+    public String toString() {
+        return "NotificationEmail{" +
+                "receiveEmail=" + receiveEmail +
+                ", recipient='" + recipient + '\'' +
+                ", recipientCC=" + recipientCC +
+                ", sender='" + sender + '\'' +
+                '}';
+    }
 }
