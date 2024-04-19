@@ -1,4 +1,4 @@
-package org.z.act.service;
+package org.z.act.resource;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.reactive.ReactiveMailer;
@@ -9,9 +9,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.z.act.dto.NotificationDTO;
 import org.z.act.dto.NotificationEmail;
 import org.z.act.entity.NotificationEmailEntity;
+import org.z.act.service.EmailService;
+import org.z.act.service.PersistService;
 
 import java.time.LocalDateTime;
 
@@ -27,8 +28,7 @@ public class NotificationConsumer {
     @ApplicationScoped
     public static class EmailConsumer {
         @Inject
-        ReactiveMailer reactiveMailer;
-
+        EmailService emailService;
         @Incoming("my-email")
         public void processEmail(NotificationEmail emailNotification) {
             LocalDateTime now = LocalDateTime.now();
@@ -38,25 +38,7 @@ public class NotificationConsumer {
             PersistService.persistNotification(notificationEntity);
 
             if (emailNotification.isReceiveEmail()) {
-                sendEmail(emailNotification);
-            }
-        }
-        private void sendEmail(NotificationEmail emailNotification) {
-            try {
-                Mail mail = Mail.withText(emailNotification.getRecipient(), emailNotification.getSubject(), emailNotification.getBody());
-
-                if (emailNotification.getRecipientCC() != null) {
-                    for (String ccRecipient : emailNotification.getRecipientCC()) {
-                        mail = mail.addCc(ccRecipient);
-                    }
-                }
-                reactiveMailer.send(mail)
-                        .subscribe().with(
-                                success -> LOG.info("E-mail enviado com sucesso para: " + emailNotification.getRecipient()),
-                                failure -> LOG.error("Erro ao enviar e-mail: " + failure.getMessage()));
-
-            } catch (Exception e) {
-                LOG.error("Erro ao enviar e-mail: " + e.getMessage(), e);
+                emailService.sendEmail(emailNotification);
             }
         }
     }

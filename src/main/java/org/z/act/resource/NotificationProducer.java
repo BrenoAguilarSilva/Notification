@@ -1,4 +1,4 @@
-package org.z.act.service;
+package org.z.act.resource;
 
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
@@ -15,6 +15,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import org.z.act.dto.NotificationDTO;
 import org.z.act.dto.NotificationEmail;
+import org.z.act.service.MessageService;
 
 @ApplicationScoped
 @Path("/notification/api/v1/")
