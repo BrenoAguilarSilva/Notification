@@ -1,5 +1,7 @@
 package org.z.act.service;
 
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -10,11 +12,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+
 import org.z.act.dto.NotificationDTO;
+import org.z.act.dto.NotificationEmail;
 
 @ApplicationScoped
 @Path("/notification/api/v1/")
 public class NotificationProducer {
+    private static final Logger LOG = LoggerFactory.getLogger(NotificationProducer.class);
     @Inject
     @Channel("my-notification")
     Emitter<String> emitter;
@@ -24,7 +29,7 @@ public class NotificationProducer {
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendNotification(NotificationDTO notificationData) {
         try {
-            String message = createMessage(notificationData);
+            String message = MessageService.createMessage(notificationData);
             emitter.send(message);
             return Response.status(Response.Status.CREATED).entity("{\"message\": \"Notificação enviada\"}").build();
         } catch (Exception e) {
@@ -32,25 +37,17 @@ public class NotificationProducer {
         }
     }
 
-    private String createMessage(NotificationDTO notificationData) {
-        return String.format("Este email foi enviado por \"%s\" para \"%s\", com a intenção de notifica-lo sobre \"%s\". Este é o conteúdo do email: \"%s\"",
-                notificationData.getEmail().getSender(),
-                notificationData.getEmail().getRecipient(),
-                notificationData.getSubject(),
-                notificationData.getBody());
-    }
-
     @Inject
     @Channel("my-email")
-    Emitter<NotificationDTO> emailEmitter;
+    Emitter<NotificationEmail> emailEmitter;
 
     @POST
     @Path("sendEmail")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response sendEmail(NotificationDTO notificationData) {
+    public Response sendEmail(NotificationEmail notificationEmail) {
         try {
-            emailEmitter.send(notificationData);
+            emailEmitter.send(notificationEmail);
             return Response.status(Response.Status.CREATED).entity("{\"message\": \"Email colocado na fila para envio\"}").build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("{\"message\": \"Falha ao colocar o email na fila\"}").build();

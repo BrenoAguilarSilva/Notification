@@ -2,7 +2,7 @@ package org.z.act.dto;
 
 import java.util.List;
 
-public class NotificationEmail {
+public class NotificationEmail extends NotificationDTO{
     private boolean receiveEmail;
     private String recipient;
     private List<String> recipientCC;

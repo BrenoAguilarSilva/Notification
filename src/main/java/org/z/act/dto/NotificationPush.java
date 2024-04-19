@@ -1,6 +1,6 @@
 package org.z.act.dto;
 
-public class NotificationPush {
+public class NotificationPush extends NotificationDTO{
     private boolean receivePush;
     private String recipientPush;
 

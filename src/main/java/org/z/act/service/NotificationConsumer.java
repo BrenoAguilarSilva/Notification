@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.z.act.dto.NotificationDTO;
+import org.z.act.dto.NotificationEmail;
 import org.z.act.entity.NotificationEmailEntity;
 
 import java.time.LocalDateTime;
@@ -29,47 +30,34 @@ public class NotificationConsumer {
         ReactiveMailer reactiveMailer;
 
         @Incoming("my-email")
-        public void processEmail(NotificationDTO notificationDTO) {
+        public void processEmail(NotificationEmail emailNotification) {
             LocalDateTime now = LocalDateTime.now();
 
-            NotificationEmailEntity notificationEntity = new NotificationEmailEntity();
-            notificationEntity.setReceiveEmail((notificationDTO.getEmail().isReceiveEmail()));
-            notificationEntity.setRecipient(notificationDTO.getEmail().getRecipient());
-            notificationEntity.setCcRecipients(notificationDTO.getEmail().getRecipientCC());
-            notificationEntity.setSender(notificationDTO.getEmail().getSender());
-            notificationEntity.setSubject(notificationDTO.getSubject());
-            notificationEntity.setBody(notificationDTO.getBody());
-            notificationEntity.setData(now);
+            NotificationEmailEntity notificationEntity = PersistService.getNotificationEmailEntity(emailNotification, now);
 
-            persistNotification(notificationEntity);
+            PersistService.persistNotification(notificationEntity);
 
-            if (notificationDTO.getEmail().isReceiveEmail()) {
-                sendEmail(notificationDTO);
+            if (emailNotification.isReceiveEmail()) {
+                sendEmail(emailNotification);
             }
         }
-        private void sendEmail(NotificationDTO notificationDTO) {
+        private void sendEmail(NotificationEmail emailNotification) {
             try {
-                Mail mail = Mail.withText(notificationDTO.getEmail().getRecipient(), notificationDTO.getSubject(), notificationDTO.getBody());
+                Mail mail = Mail.withText(emailNotification.getRecipient(), emailNotification.getSubject(), emailNotification.getBody());
 
-                if (notificationDTO.getEmail().getRecipientCC() != null) {
-                    for (String ccRecipient : notificationDTO.getEmail().getRecipientCC()) {
+                if (emailNotification.getRecipientCC() != null) {
+                    for (String ccRecipient : emailNotification.getRecipientCC()) {
                         mail = mail.addCc(ccRecipient);
                     }
                 }
-                    reactiveMailer.send(mail)
-                            .subscribe().with(
-                                    success -> LOG.info("E-mail enviado com sucesso para: " + notificationDTO.getEmail().getRecipient()),
-                                    failure -> LOG.error("Erro ao enviar e-mail: " + failure.getMessage()));
+                reactiveMailer.send(mail)
+                        .subscribe().with(
+                                success -> LOG.info("E-mail enviado com sucesso para: " + emailNotification.getRecipient()),
+                                failure -> LOG.error("Erro ao enviar e-mail: " + failure.getMessage()));
 
             } catch (Exception e) {
                 LOG.error("Erro ao enviar e-mail: " + e.getMessage(), e);
             }
-        }
-        private void persistNotification(NotificationEmailEntity notificationEntity) {
-            notificationEntity.persist().subscribe().with(
-                    result -> LOG.info("Persistencia realizada com sucesso"),
-                    failure -> LOG.error("Erro ao persistir e-mail: " + failure.getMessage())
-            );
         }
     }
 }
