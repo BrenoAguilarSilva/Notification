@@ -32,9 +32,7 @@ public class NotificationConsumer {
         EmailService emailService;
         @Incoming("my-email")
         public void processEmail(NotificationEmail emailNotification) {
-            LocalDateTime now = LocalDateTime.now();
-
-            NotificationEmailEntity notificationEntity = PersistService.getNotificationEmailEntity(emailNotification, now);
+            NotificationEmailEntity notificationEntity = PersistService.getNotificationEmailEntity(emailNotification);
 
             PersistService.persistNotification(notificationEntity);
 

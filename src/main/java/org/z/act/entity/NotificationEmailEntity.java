@@ -19,6 +19,18 @@ public class NotificationEmailEntity extends ReactivePanacheMongoEntity {
     public String body;
     public LocalDateTime data;
 
+    public NotificationEmailEntity(boolean receiveEmail, String recipient, List<String> ccRecipients, String sender, String subject, String body) {
+        LocalDateTime now = LocalDateTime.now();
+        this.receiveEmail = receiveEmail;
+        this.recipient = recipient;
+        this.ccRecipients = ccRecipients;
+        this.sender = sender;
+        this.subject = subject;
+        this.body = body;
+        this.data = now;
+    }
+
+    public NotificationEmailEntity(){}
 
     public ObjectId getId() {
         return id;
