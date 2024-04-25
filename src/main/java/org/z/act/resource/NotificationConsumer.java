@@ -33,9 +33,7 @@ public class NotificationConsumer {
         @Incoming("my-email")
         public void processEmail(NotificationEmail emailNotification) {
             NotificationEmailEntity notificationEntity = PersistService.getNotificationEmailEntity(emailNotification);
-
             PersistService.persistNotification(notificationEntity);
-
             if (emailNotification.isReceiveEmail()) {
                 emailService.sendEmail(emailNotification);
             }
